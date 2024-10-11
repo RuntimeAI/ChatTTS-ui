@@ -1,0 +1,22 @@
+FROM pytorch/torchserve:0.11.0-gpu as builder
+
+USER root
+
+RUN apt-get update && apt-get install -y ffmpeg
+
+WORKDIR /app
+
+COPY . ./
+
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip install gunicorn
+
+# Expose the Cloud Run port (8080)
+EXPOSE 8080
+
+# Command to run the application (adjust based on your app)
+# Use the appropriate command for starting your app, e.g., Flask, FastAPI, etc.
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "--workers", "4", "app:app"]
+
+
+
